@@ -1,2 +1,2 @@
 # homeConnect
-An arduino based home automation system
+Arduino tabanlı otomasyon sistemi
