@@ -15,8 +15,8 @@ IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
 
 //constants
-const char* ssid = "  "; //Enter your WiFi SSID
-const char* password = "  "; //Enter your WiFi Password
+const char* ssid = " "; //Kablosuz SSID gir
+const char* password = "  "; //Kablosuz şifre gir
 const long utcOffsetInSeconds = 10800;
 char daysOfTheWeek[7][12] = {"Pazar", "Pazartesi", "Sali", "Carsamba", "Perşembe", "Cuma", "Cumartesi"};
 
@@ -40,6 +40,37 @@ byte customChar2[] = {
   0x04
 };
 
+byte pac1[] = {
+  0x00,
+  0x0E,
+  0x1B,
+  0x1F,
+  0x1F,
+  0x0E,
+  0x00,
+  0x00
+};
+byte pac2[] = {
+  0x00,
+  0x0E,
+  0x14,
+  0x18,
+  0x1C,
+  0x0E,
+  0x00,
+  0x00
+};
+ 
+byte pac2b[8] = {
+  B00000,
+  B11110,
+  B01011,
+  B00111,
+  B01111,
+  B11110,
+  B00000,
+  B00000 };
+
 
 void setup() {
 
@@ -55,6 +86,8 @@ void setup() {
     WiFi.mode(WIFI_STA);
     lcd.createChar(0, customChar); //creating custom lcd char down arrow 
     lcd.createChar(1, customChar2); //creating custom lcd char down arrow 
+    lcd.createChar(2, pac2);
+    lcd.createChar(3, pac1);
   // Connect to WiFi network
   Serial.println();
   Serial.println();
@@ -87,6 +120,7 @@ void setup() {
 
   //time client start
     timeClient.begin();
+
 
    
 }
@@ -162,18 +196,77 @@ void loop() {
     
     lcd.setCursor (0,0);  // go home
     if (h>60 || t<22){
-      lcd.print(" :( "); 
+      lcd.print(":( "); 
       durum = 0;
     } else {
-      lcd.print(" :) ");
+      lcd.print(":) ");
       durum = 1;
     }
 
+  // pacman player
+
+ int  counterRem = timeClient.getSeconds()%12;
+  switch(counterRem){
+    case 0:
+    lcd.write(2);
+    break;
+    case 1:
+    lcd.print (" ");
+    lcd.write(2);
+    break;
+    case 2:
+    lcd.print ("  ");
+    lcd.write(2);
+    break;
+    case 3:
+    lcd.print ("   ");
+    lcd.write(2);
+    break;
+    case 4:
+    lcd.print ("    ");
+    lcd.write(2);
+    break;
+    case 5:
+    lcd.print ("     ");
+    lcd.write(2);
+    break;
+    case 6:
+    lcd.print ("      ");
+    lcd.write(2);
+    break;
+    case 7:
+    lcd.print ("       ");
+    lcd.write(2);
+    break;
+    case 8:
+    lcd.print ("        ");
+    lcd.write(2);
+    break;
+    case 9:
+    lcd.print ("         ");
+    lcd.write(2);
+    break;
+    case 10:
+    lcd.print ("          ");
+    lcd.write(2);
+    break;
+    case 11:
+    lcd.print ("           ");
+    lcd.write(2);
+    break;
+    default:
+    lcd.write(2);
+    break;
+    
+    }
+
+
     //WIFI STATUS ON SCREEN
+
     if (WiFi.status() == WL_CONNECTED){ 
-      lcd.print("            (())");
+      lcd.print(" (())");
     } else {
-      lcd.print("              x ");
+      lcd.print(" x");
     }
 
     //NEM MEASUREMENT LCD DISPLAY
@@ -234,7 +327,7 @@ client.print(timeClient.getHours());
   delay(10);
      client.println("<br>");
 
-//using weatherwidget. Use your own location with weatherwidget here
+//using weatherwidget 
   client.print("<a class=\"weatherwidget-io\" href=\"https://forecast7.com/tr/40d6729d89/havuzlu-bahce/\" data-label_1=\"HAVUZLU BAHÇE\" data-label_2=\"DIŞ SICAKLIK\" data-theme=\"original\" >HAVUZLU BAHÇE DIŞ SICAKLIK</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>");
 
   client.print("<br>");
@@ -275,6 +368,6 @@ client.print(timeClient.getHours());
     Serial.println("");
 
         //putting 5 secs delay for every loop for the wifi security
-    delay(5000);
+    delay(100);
     
 }
